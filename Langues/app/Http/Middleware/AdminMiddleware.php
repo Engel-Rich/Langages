@@ -17,12 +17,16 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
+       try {
         $userId = $request->user()->user_id;
 
-        $isAdmin = Admin::where('user_id', $userId)->exsists();
+        $isAdmin = Admin::where('user_id', $userId)->exists();
         if ($isAdmin)
             return $next($request);
         else
             return response()->json(['message' => "authorization denied"], 403);
+       } catch (\Throwable $th) {
+        return response()->json(['message' => "authorization denied", 'error'=> $th->getMessage() ], 500);
+       }
     }
 }

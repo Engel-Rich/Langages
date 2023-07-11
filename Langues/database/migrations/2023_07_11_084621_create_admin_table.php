@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('eleves', function (Blueprint $table) {
-            $table->bigIncrements('eleve_id');
-            // $table->bigInteger('user_id');
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
-                    
+
             $table->unsignedBigInteger('user_id')->unique();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
         });
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('eleves');
+        Schema::dropIfExists('admin');
     }
 };

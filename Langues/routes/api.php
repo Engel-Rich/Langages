@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EleveController;
 use App\Http\Controllers\LangueController;
 use App\Http\Controllers\LeconController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\ProfesseurController;
 use App\Http\Controllers\UserController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,8 +29,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('langue', LangueController::class)->only(['show']);
     Route::resource('paiement', PaiementController::class)->only(['store', 'show']);
     Route::resource('module', ModuleController::class)->only(['show']);
-    Route::resource('lecon', LeconController::class)->only(['show']);
+    Route::resource('lecon', LeconController::class)->only(['show']);   
+    Route::post('admin/create',[AdminController::class, 'store']); 
+
+
+    Route::middleware(['admin'])->prefix('admin/professeur')->group(function () {
+        Route::post('create', [ProfesseurController::class,'store']); //->only(['create', 'update','destroy','show']);
+    });
+    
+    Route::middleware(['prof'])->group(function () {
+        Route::resource('module',ModuleController::class  )->only(['create', 'update','destroy','show']);    
+        Route::resource('lecons', LeconController::class )->only(['create', 'update','destroy','show']);    
+    });
+
 });
+
+
 
 Route::post('user/register', [UserController::class, 'register']);
 Route::post('user/login', [UserController::class, 'login']);
+// Route::post('admin/create',[AdminController::class, 'store']);

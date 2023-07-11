@@ -54,7 +54,7 @@ class UserController extends RetourController
                 ]);
             }
         } catch (\Throwable $th) {
-            return  $this->returnError($th, code: 500);
+            return  $this->returnError(''.$th->getMessage(), code: 500);
         }
     }
 
@@ -84,7 +84,7 @@ class UserController extends RetourController
                 }
             }
         } catch (\Throwable $th) {
-            return     $this->returnError($th, message: 'Error' . $th, code: 500);
+            return     $this->returnError($th->getMessage(), message: 'Error' . $th, code: 500);
         }
     }
 

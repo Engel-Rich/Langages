@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('lecon_title');            
             $table->string('lecon_voice');            
             $table->string('lecon_image')->nullable();            
-            $table->mediumText('lecon_text')->nullable();            
-            $table->mediumText('lecon_quiz')->nullable();            
+            $table->mediumText('lecon_description')->nullable();            
+            // $table->mediumText('lecon_quiz')->nullable();            
             $table->timestamps();
 
             $table->unsignedBigInteger('module_id');

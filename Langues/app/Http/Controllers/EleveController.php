@@ -35,22 +35,9 @@ class EleveController extends RetourController
                 'user_id'=>auth()->user()->user_id,
             ]);
             return $this->retournresponse(['eleve_id'=>auth()->user()->user_id]);
-            // $validation = Validator::make($request->all(),[
-            //     'id_genere'=>'string|required'
-            // ]);
-    
-            // if($validation->fails()){
-            //     return $this->returnError('erreur de remplissage du formullaire',code:401, message:$validation->errors());            
-            // }else{
-            //     $user = User::where('user_key_generate', $request->id_genere)->firts;
-            //     if($user){
-                    
-            //     }else{
-            //         return $this->returnError('error when get current user',404);            
-            //     }
-            // }
+           
         } catch (\Throwable $th) {
-            return $this->returnError('Erreur de connection au serveur', message: 'Error : '.$th, code:500);
+            return $this->returnError('Erreur de connection au serveur', message: 'Error : '.$th->getMessage(), code:500);
         }
         
     }

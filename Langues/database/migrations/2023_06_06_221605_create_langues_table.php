@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('langues', function (Blueprint $table) {
             $table->bigIncrements('langue_id');                
             $table->string('langue_image')->nullable();
+            $table->string('langue_name')->nullable();
             $table->string('langue_origine');
             $table->timestamps();
         });

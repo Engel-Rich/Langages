@@ -29,10 +29,11 @@ class UserController extends RetourController
     {
         try {
             $validate = Validator::make($request->all(), [
+                'phone'=> ['required','string','min:9','max:13'],
                 "name" => 'required',
                 'email' => ['required', 'unique:users'],
-                'password' => 'required|min:8|max:35',
-                'ville'=> 'required|string|min:3'
+                'password' => 'required|min:6|max:35',
+                'ville' => 'required|string|min:3',                
             ]);
 
             if ($validate->fails()) {
@@ -45,7 +46,8 @@ class UserController extends RetourController
                     'email' => $request->email,
                     'ville'=>$request->ville,
                     'user_key_generate' => (string)$uniquekey,
-                    'password' => Hash::make($request->password),                    
+                    'password' => Hash::make($request->password),  
+                    'phone'=>$request->phone                  
                 ]);
                
                 return $this->retournresponse([
@@ -68,7 +70,7 @@ class UserController extends RetourController
         try {
             $validation = Validator::make($request->all(), [
                 'email' => 'string|required',
-                'password' => 'string|required|min:8|max:35'
+                'password' => 'string|required|min:6|max:35'
             ]);
             if ($validation->fails()) {
                 return    $this->returnError($validation->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
@@ -115,7 +117,7 @@ class UserController extends RetourController
      */
     public function show(Request $request)
     {
-        return $request->user();    
+        return $this->retournresponse($request->user());    
     }
 
     /**

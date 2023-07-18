@@ -48,4 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('user/register', [UserController::class, 'register']);
 Route::post('user/login', [UserController::class, 'login']);
+Route::get('test',function(){
+    return response()->json(['distante'=> 'Ok']);
+} );
 // Route::post('admin/create',[AdminController::class, 'store']);

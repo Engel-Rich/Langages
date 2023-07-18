@@ -24,7 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'ville',
-        'user_key_generate'
+        'user_key_generate',
+        'phone'
     ];
 
     /**

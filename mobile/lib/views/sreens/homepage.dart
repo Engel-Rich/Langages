@@ -6,6 +6,7 @@ import 'package:mobile/providers/tokenprovider.dart';
 import 'package:mobile/views/sreens/langages_screen.dart';
 import 'package:mobile/views/sreens/langue_niveau.dart';
 import 'package:mobile/views/sreens/lecons_langues.dart';
+import 'package:mobile/views/sreens/user_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,9 +23,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: [
           spacerwidth(30),
-          const CircleAvatar(
-            child: Center(
-              child: Icon(Icons.person),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: UserScreen(),
+                      type: PageTransitionType.leftToRight));
+            },
+            child: const CircleAvatar(
+              child: Center(
+                child: Icon(Icons.person),
+              ),
             ),
           ),
           spacerwidth(30),
@@ -38,7 +48,9 @@ class _HomePageState extends State<HomePage> {
             children: [
               spacerheight(15),
               Text(
-                'Bonjour, ${UserProvider.user.currenUser!.userName}',
+                'Bonjour IVAN'
+                //  ${UserProvider.user.currenUser!.userName}'
+                ,
                 style: primarystyle.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -123,15 +135,15 @@ class _HomePageState extends State<HomePage> {
                     )),
                 child: Center(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      spacerwidth(10),
                       minilangeContainer(context, "B", Colors.green),
-                      spacerwidth(10),
+
                       minilangeContainer(context, "E", Colors.indigo),
-                      spacerwidth(10),
+
                       minilangeContainer(context, "F", Colors.blueAccent),
-                      spacerwidth(10),
-                      minilangeContainer(context, "M", Colors.amber),
+
+                      // minilangeContainer(context, "M", Colors.amber),
                       spacerwidth(10),
                       Container(
                           height: 50,

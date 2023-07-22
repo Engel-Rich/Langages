@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           home: UserProvider.user.tokenuser == null
-              ? const InitialScreen()
-              : const HomePage(),
+              ? const HomePage()
+              : const InitialScreen(),
         );
       },
     );

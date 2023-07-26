@@ -16,7 +16,7 @@ class Abonnement extends Model
 
     protected $primarykey = 'abonnement_id';
 
-    protected $fillable = ['eleve_id', 'paiement_id', 'langue_id', 'abonnement_date'];
+    protected $fillable = ['user_id', 'paiement_id', 'langue_id', 'abonnement_date'];
 
 
     // relation sheep
@@ -28,7 +28,7 @@ class Abonnement extends Model
 
     public function eleve(): BelongsTo
     {
-        return $this->belongsTo(Eleve::class, 'eleve_id', 'abonnement_id');
+        return $this->belongsTo(User::class, 'user_id', 'abonnement_id');
     }
 
     public function langue(): BelongsTo

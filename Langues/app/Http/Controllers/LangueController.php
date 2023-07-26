@@ -16,7 +16,12 @@ class LangueController extends RetourController
      */
     public function index()
     {
-        //
+        try {
+            $userlist =  Langue::all();
+            return $this->retournresponse($userlist);
+        } catch (\Throwable $th) {
+            $this->returnError(''.$th->getMessage());
+        }
     }
 
     /**
@@ -27,24 +32,25 @@ class LangueController extends RetourController
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => ['string', 'required', 'unique:langues','min:3'],
-                'image' => ['required', 'file', 'max:5120', 'mimes:png,jpg,jpeg']
+                'langue_name' => ['string', 'required', 'unique:langues','min:3'],
+                'langue_origine' => ['string', 'min:3'],
+                'langue_image' => ['file', 'max:5120', 'mimes:png,jpg,jpeg']
             ]
         );
-        if ($validator->failed())
-            $this->returnError($validator->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
+        if ($validator->fails())
+          return  $this->returnError($validator->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
         else {
             try {
-                $name = (string)Str::uuid() . '.' . $request->file('image')->extension();
-                $image = Storage::url($request->file('image')->storeAs('Langues', $name, 'public'));
+                // $name = (string)Str::uuid() . '.' . $request->file('image')->extension();
+                // $image = Storage::url($request->file('image')->storeAs('Langues', $name, 'public'));
                 Langue::create([
-                    'langue_image' => $image,
-                    'langue_name' => $request->name,
-                    'langue_origine' => $request->origine ?? ""
+                    'langue_image' => '',
+                    'langue_name' => $request->langue_name,
+                    'langue_origine' => $request->langue_origine ?? ""
                 ]);
-                $this->retournresponse('lange ajouté avec succès');
+                return  $this->retournresponse('lange ajouté avec succès');
             } catch (\Throwable $th) {
-                $this->returnError($th->getMessage(), message:'erreur inconnue',code:500);
+                return   $this->returnError($th->getMessage(), message:'erreur inconnue',code:500);
             }
         }
     }

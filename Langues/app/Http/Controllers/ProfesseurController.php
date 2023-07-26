@@ -16,7 +16,16 @@ class ProfesseurController extends RetourController
      */
     public function index()
     {
-        //
+        try {
+            $profs = Professeur::all();
+        $userList = [];
+        foreach ($profs as $prof) {
+            array_push($userList,User::find($prof->user_id) );
+        }
+        return $this->retournresponse($userList);
+        } catch (\Throwable $th) {
+            return $this->returnError($th->getMessage());
+        }
     }
 
     /**
@@ -29,7 +38,8 @@ class ProfesseurController extends RetourController
                 "name" => 'required',
                 'email' => ['required', 'unique:users'],
                 'password' => 'required|min:8|max:35',
-                'ville'=> 'required|string|min:3'
+                'ville'=> 'required|string|min:3',
+                'phone'=>'required|min:9|string'
             ]);
 
             if ($validate->fails()) {
@@ -42,7 +52,8 @@ class ProfesseurController extends RetourController
                     'email' => $request->email,
                     'ville'=>$request->ville,
                     'user_key_generate' => (string)$uniquekey,
-                    'password' => Hash::make($request->password),                    
+                    'password' => Hash::make($request->password),  
+                    'phone'=>$request->phone,   
                 ]);
                Professeur::create(["user_id"=>$user->user_id]);
                 return $this->retournresponse([

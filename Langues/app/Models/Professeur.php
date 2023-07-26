@@ -23,7 +23,7 @@ class Professeur extends Model
 
     public function user():BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'prof_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function langues():BelongsToMany{

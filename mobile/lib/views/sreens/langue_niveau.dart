@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/commons/fonctions.dart';
 import 'package:mobile/commons/style.dart';
+import 'package:mobile/models/langues.dart';
+import 'package:mobile/models/module.dart';
 import 'package:mobile/views/components/button.dart';
+import 'package:mobile/views/sreens/lecons_langues.dart';
+import 'package:page_transition/page_transition.dart';
+
+import '../../controllers/module_controller.dart';
 
 class LangageNiveau extends StatefulWidget {
-  final String langue;
+  final Langue langue;
   const LangageNiveau({super.key, required this.langue});
 
   @override
@@ -12,6 +19,33 @@ class LangageNiveau extends StatefulWidget {
 
 class _LangageNiveauState extends State<LangageNiveau> {
   int selectedLevel = 0;
+
+  String? selectedlevel;
+  late Langue langue;
+  String? error;
+
+  @override
+  void initState() {
+    langue = widget.langue;
+    loadModuleList();
+    super.initState();
+  }
+
+  loadModuleList() async {
+    await ModuleController().getAllModules(context, langue).then((value) {
+      loadin = false;
+      if (value != null) {
+        modules = value;
+      }
+      setState(() {});
+    });
+  }
+
+  int? seletedmodule;
+  List<Module>? modules;
+  Module? moduleselectted;
+  // List<Lecon> lecons = [];
+  bool loadin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +57,7 @@ class _LangageNiveauState extends State<LangageNiveau> {
           icon: const Icon(Icons.arrow_back_ios, size: 25),
         ),
         title: Text(
-          widget.langue,
+          widget.langue.langue_name,
           style: primarystyle.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -42,145 +76,102 @@ class _LangageNiveauState extends State<LangageNiveau> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const Spacer(),
-            InkWell(
-              onTap: () {
-                setState(() => selectedLevel = 1);
-              },
-              child: Container(
-                height: 120,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: selectedLevel == 1
-                          ? Colors.blueAccent
-                          : Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.book_rounded,
-                      size: 50,
-                    ),
-                    // leading: Image.asset(
-                    //   'assets/bgl.png',
-                    //   height: 60,
-                    //   width: 60,
-                    // ),
-                    title: Text(
-                      'Débutant',
-                      style: primarystyle.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: selectedLevel == 1
-                              ? Colors.blueAccent
-                              : Colors.grey.shade500),
-                    ),
-                    subtitle: Text(
-                      'Ici vous apprenez les bases de la langue',
-                      style: primarystyle,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            spacerheight(15),
-            InkWell(
-              onTap: () {
-                setState(() => selectedLevel = 2);
-              },
-              child: Container(
-                height: 120,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: selectedLevel == 2
-                          ? Colors.blueAccent
-                          : Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.book_rounded,
-                      size: 50,
-                    ),
-                    // leading: Image.asset(
-                    //   'assets/bgl.png',
-                    //   height: 60,
-                    //   width: 60,
-                    // ),
-                    title: Text(
-                      'Intermédiaire',
-                      style: primarystyle.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: selectedLevel == 2
-                              ? Colors.blueAccent
-                              : Colors.grey.shade500),
-                    ),
-                    subtitle: Text(
-                      'Ici vous apprenez les contoures de la langue',
-                      style: primarystyle,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            spacerheight(15),
-            InkWell(
-              onTap: () {
-                setState(() => selectedLevel = 3);
-              },
-              child: Container(
-                height: 120,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: selectedLevel == 3
-                          ? Colors.blueAccent
-                          : Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.book_rounded,
-                      size: 50,
-                    ),
-                    // leading: Image.asset(
-                    //   'assets/bgl.png',
-                    //   height: 60,
-                    //   width: 60,
-                    // ),
-                    title: Text(
-                      'Avancé',
-                      style: primarystyle.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: selectedLevel == 3
-                              ? Colors.blueAccent
-                              : Colors.grey.shade500),
-                    ),
-                    subtitle: Text(
-                      'Ici vous apprenez les expression particulières de la langue',
-                      style: primarystyle,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const Spacer(),
+            spacerheight(30),
+            loadin
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : modules == null
+                    ? Center(
+                        child: Text(error ?? 'Something when wrongs',
+                            style: primarystyle17.copyWith(
+                              color: Colors.red,
+                            )),
+                      )
+                    : Column(
+                        children: [
+                          ...modules!
+                              .map((module) => Column(
+                                    children: [
+                                      moduleWidget(module),
+                                      spacerheight(15),
+                                    ],
+                                  ))
+                              .toList()
+                        ],
+                      ),
+            spacerheight(30),
             SizedBox(
               height: 50,
               width: double.infinity,
               child: bouttonCommun(
                   tittle: 'Commencer',
                   onPressed: () {
-                    if (selectedLevel == 0) {
-                    } else {}
+                    if (moduleselectted == null) {
+                      toasterError(context,
+                          "Veille selectionner un module d'apprentissage");
+                    } else {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                            child: LeconLangage(
+                              langue: langue,
+                              module: moduleselectted!,
+                            ),
+                            type: PageTransitionType.leftToRight),
+                      );
+                    }
                   }),
             ),
             spacerheight(50),
           ],
+        ),
+      ),
+    );
+  }
+
+  InkWell moduleWidget(Module module) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedLevel = module.module_id!;
+          moduleselectted = module;
+        });
+      },
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          border: Border.all(
+              width: 3,
+              color: selectedLevel == module.module_id
+                  ? Colors.orange
+                  : Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: ListTile(
+            leading: Image.asset(
+              'assets/bgl.png',
+              height: 60,
+              width: 60,
+            ),
+            title: Text(
+              module.module_name,
+              style: primarystyle.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: selectedLevel == module.module_id
+                      ? Colors.blueAccent
+                      : Colors.grey.shade500),
+            ),
+            subtitle: Text(
+              '${module.module_price} FCFA',
+              style: primarystyle17.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.orange,
+              ),
+            ),
+          ),
         ),
       ),
     );

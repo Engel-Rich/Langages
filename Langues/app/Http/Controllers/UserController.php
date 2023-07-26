@@ -15,10 +15,16 @@ class UserController extends RetourController
     /**
      * Display a listing of the resource.
      */
-    // public function index()
-    // {
-    //     //
-    // }
+    public function index()
+    {
+        try {
+            $userlist =  User::all();
+            return $this->retournresponse($userlist);
+        } catch (\Throwable $th) {
+            $this->returnError(''.$th->getMessage());
+        }
+        // dd($userlist);
+    }
 
 
     /**
@@ -56,7 +62,7 @@ class UserController extends RetourController
                 ]);
             }
         } catch (\Throwable $th) {
-            return  $this->returnError(''.$th->getMessage(), code: 500);
+            return  $this->returnError(''.$th->getMessage(), message: $th->getMessage()??"Erreur inconue survenue lors de l'exécution de la requette");
         }
     }
 
@@ -82,11 +88,11 @@ class UserController extends RetourController
                         'idgenere' => $user->user_key_generate,
                     ]);
                 } else {
-                    return   $this->returnError('error login', message: 'Email ou mot de passe incorrect', code: 401);
+                    return   $this->returnError('Email ou mt de passe incorrecte', message: 'Email ou mot de passe incorrect', code: 401);
                 }
             }
         } catch (\Throwable $th) {
-            return     $this->returnError($th->getMessage(), message: 'Error' . $th, code: 500);
+            return     $this->returnError($th->getMessage(), message: 'Error' . $th, code: 403);
         }
     }
 

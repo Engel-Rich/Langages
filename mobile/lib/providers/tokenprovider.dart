@@ -43,6 +43,11 @@ class UserProvider extends GetxController {
     // End
   }
 
+  logOut() async {
+    final preference = await SharedPreferences.getInstance();
+    await preference.remove(tokenLocal);
+    await preference.remove(userLocal);
+  }
   // End
 }
 

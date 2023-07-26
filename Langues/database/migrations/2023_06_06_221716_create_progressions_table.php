@@ -22,8 +22,8 @@ return new class extends Migration
             $table->unsignedBigInteger('module_id');
             $table->foreign('module_id')->references('module_id')->on('modules')->onDelete('cascade');
 
-            $table->unsignedBigInteger('eleve_id');
-            $table->foreign('eleve_id')->references('eleve_id')->on('eleves')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
 
             $table->unsignedBigInteger('lecon_id');
             $table->foreign('lecon_id')->references('lecon_id')->on('lecons')->onDelete('cascade');

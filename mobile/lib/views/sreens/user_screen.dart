@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/providers/tokenprovider.dart';
+import 'package:mobile/views/sreens/initialpage.dart';
 import 'package:page_transition/page_transition.dart';
+// import 'package:page_transition/page_transition.dart';
 
 import '../../commons/style.dart';
 import '../components/button.dart';
@@ -158,12 +161,20 @@ class _UserScreenState extends State<UserScreen> {
             ],
           ),
           Center(
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
+              height: 55,
               child: bouttonCommun(
                 tittle: "Se Déconnecté",
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  await UserProvider().logOut().then((val) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        PageTransition(
+                            child: InitialScreen(),
+                            type: PageTransitionType.leftToRight),
+                        (route) => false);
+                  });
                 },
               ),
             ),
@@ -205,7 +216,7 @@ Widget listProfil2(
       title: Text(title),
       subtitle: Text(subtitle),
       trailing: PopupMenuButton(
-        icon: Icon(Icons.more_vert),
+        icon: const Icon(Icons.translate_outlined),
         itemBuilder: (context) {
           return [
             const PopupMenuItem(

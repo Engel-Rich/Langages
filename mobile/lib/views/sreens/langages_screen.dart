@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile/commons/style.dart';
+import 'package:mobile/controllers/langue_controller.dart';
+import 'package:mobile/models/langues.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'langue_niveau.dart';
@@ -14,6 +16,28 @@ class LangagesScreen extends StatefulWidget {
 }
 
 class _LangagesScreenState extends State<LangagesScreen> {
+  List<Langue>? allLangages;
+  bool loading = true;
+  String? error;
+
+  initLangages() async {
+    await LangueController().getAllLangages(context).then((value) {
+      loading = false;
+      if (value == null) {
+        error = "Impossible de récupérer les utilisateurs";
+      } else {
+        allLangages = value;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    initLangages();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,30 +56,34 @@ class _LangagesScreenState extends State<LangagesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(
-          child: Wrap(
-            runSpacing: 10,
-            children: [
-              langeContainer(context, lang_name: 'Bulu', lang_nom: 15),
-              spacerwidth(15),
-              langeContainer(context,
-                  lang_name: 'Ewondo', lang_nom: 20, colors: Colors.indigo),
-              spacerwidth(15),
-              langeContainer(
-                context,
-                lang_name: 'Bamiléké',
-                lang_nom: 10,
-                colors: Colors.orangeAccent,
-              ),
-              spacerwidth(15),
-              langeContainer(
-                context,
-                lang_name: 'Fufuldé',
-                lang_nom: 15,
-                colors: Colors.amber,
-              ),
-              spacerwidth(15),
-            ],
-          ),
+          child: loading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : allLangages == null
+                  ? Center(
+                      child: Text(error ?? 'Something when wrongs',
+                          style: primarystyle17.copyWith(
+                            color: Colors.red,
+                          )),
+                    )
+                  : Center(
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          ...allLangages!
+                              .map(
+                                (lang) => langeContainer(
+                                  context,
+                                  langue: lang,
+                                  colors: selColor(),
+                                ),
+                              )
+                              .toList(),
+                        ],
+                      ),
+                    ),
         ),
       ),
     );
@@ -63,15 +91,13 @@ class _LangagesScreenState extends State<LangagesScreen> {
 }
 
 Widget langeContainer(BuildContext context,
-    {required String lang_name,
-    required int lang_nom,
-    Color colors = Colors.green}) {
+    {required Langue langue, Color colors = Colors.green}) {
   return InkWell(
     onTap: () {
       Navigator.push(
           context,
           PageTransition(
-              child: LangageNiveau(langue: lang_name),
+              child: LangageNiveau(langue: langue),
               type: PageTransitionType.leftToRight));
     },
     child: Container(
@@ -108,7 +134,7 @@ Widget langeContainer(BuildContext context,
                   borderRadius: BorderRadius.circular(10), color: colors),
               child: Center(
                 child: Text(
-                  "$lang_nom",
+                  "10",
                   style: primarystyle.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -120,7 +146,7 @@ Widget langeContainer(BuildContext context,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             child: Text(
-              lang_name,
+              langue.langue_name,
               style: primarystyle.copyWith(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -130,10 +156,11 @@ Widget langeContainer(BuildContext context,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
             child: Text(
-              'Description de la langue concernée et indications diverses.',
+              "Région d'origine : ${(langue.langue_origine == null || langue.langue_origine!.trim().isEmpty) ? 'Pas d\'origine précisé' : langue.langue_origine}",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: primarystyle.copyWith(fontSize: 12),
+              style: primarystyle.copyWith(
+                  fontSize: 12, fontWeight: FontWeight.w600),
             ),
           )
         ],

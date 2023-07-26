@@ -5,16 +5,12 @@ import 'package:mobile/views/sreens/loginsreen.dart';
 import 'package:mobile/views/sreens/register.dart';
 import 'package:page_transition/page_transition.dart';
 
-class InitialScreen extends StatefulWidget {
+class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
 
-  @override
-  State<InitialScreen> createState() => _InitialScreenState();
-}
+  // late Material materialButton;
 
-class _InitialScreenState extends State<InitialScreen> {
-  late Material materialButton;
-  late int index;
+  // late int index;
 
   @override
   Widget build(BuildContext context) {

@@ -47,5 +47,5 @@ class Langue extends Model
 
     protected $primaryKey='langue_id' ;
     
-    protected $fillable = ['langue_prix','langue_image', 'langue_origine'];
+    protected $fillable = ['langue_image', 'langue_origine','langue_name'];
 }

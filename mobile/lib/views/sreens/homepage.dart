@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile/commons/style.dart';
+import 'package:mobile/controllers/langue_controller.dart';
+import 'package:mobile/models/langues.dart';
 import 'package:mobile/providers/tokenprovider.dart';
 import 'package:mobile/views/sreens/langages_screen.dart';
 import 'package:mobile/views/sreens/langue_niveau.dart';
@@ -17,6 +19,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Langue>? allLangages;
+  bool loading = true;
+  String? error;
+
+  initLangages() async {
+    await LangueController().getAllLangages(context).then((value) {
+      loading = false;
+      if (value == null) {
+        error = "Impossible de récupérer les utilisateurs";
+      } else {
+        allLangages = value;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    initLangages();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +52,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                   context,
                   PageTransition(
-                      child: UserScreen(),
+                      child: const UserScreen(),
                       type: PageTransitionType.leftToRight));
             },
             child: const CircleAvatar(
@@ -48,9 +72,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               spacerheight(15),
               Text(
-                'Bonjour IVAN'
-                //  ${UserProvider.user.currenUser!.userName}'
-                ,
+                'Bonjour ${UserProvider.user.currenUser!.userName}',
                 style: primarystyle.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -78,31 +100,34 @@ class _HomePageState extends State<HomePage> {
               spacerheight(10),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    langeContainer(context, lang_name: 'Bulu', lang_nom: 15),
-                    spacerwidth(15),
-                    langeContainer(context,
-                        lang_name: 'Ewondo',
-                        lang_nom: 20,
-                        colors: Colors.indigo),
-                    spacerwidth(15),
-                    langeContainer(
-                      context,
-                      lang_name: 'Bamiléké',
-                      lang_nom: 10,
-                      colors: Colors.orangeAccent,
-                    ),
-                    spacerwidth(15),
-                    langeContainer(
-                      context,
-                      lang_name: 'Fufuldé',
-                      lang_nom: 15,
-                      colors: Colors.amber,
-                    ),
-                    spacerwidth(15),
-                  ],
-                ),
+                child: loading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : allLangages == null
+                        ? Center(
+                            child: Text(error ?? 'Something when wrongs',
+                                style: primarystyle17.copyWith(
+                                  color: Colors.red,
+                                )),
+                          )
+                        : Row(
+                            children: [
+                              ...allLangages!
+                                  .map(
+                                    (lang) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 15.0),
+                                      child: langeContainer(
+                                        context,
+                                        langue: lang,
+                                        colors: selColor(),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ],
+                          ),
               ),
               spacerheight(20),
               Row(
@@ -113,11 +138,11 @@ class _HomePageState extends State<HomePage> {
                           primarystyle.copyWith(fontWeight: FontWeight.bold)),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          PageTransition(
-                              child: const LeconLangage(),
-                              type: PageTransitionType.leftToRight));
+                      // Navigator.push(
+                      //     context,
+                      //     PageTransition(
+                      //         child: const LeconLangage(),
+                      //         type: PageTransitionType.leftToRight));
                     },
                     child: Text('plus', style: primarystyle),
                   )
@@ -133,31 +158,55 @@ class _HomePageState extends State<HomePage> {
                       topLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30),
                     )),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      minilangeContainer(context, "B", Colors.green),
+                child: loading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : allLangages == null
+                        ? Center(
+                            child: Text(error ?? 'Something when wrongs',
+                                style: primarystyle17.copyWith(
+                                  color: Colors.red,
+                                )),
+                          )
+                        : Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                minilangeContainer(
+                                  context,
+                                  (allLangages!..shuffle())[0],
+                                  selColor(),
+                                ),
 
-                      minilangeContainer(context, "E", Colors.indigo),
+                                minilangeContainer(
+                                  context,
+                                  (allLangages!..shuffle())[0],
+                                  selColor(),
+                                ),
 
-                      minilangeContainer(context, "F", Colors.blueAccent),
+                                minilangeContainer(
+                                  context,
+                                  (allLangages!..shuffle())[0],
+                                  selColor(),
+                                ),
 
-                      // minilangeContainer(context, "M", Colors.amber),
-                      spacerwidth(10),
-                      Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                                // minilangeContainer(context, "M", Colors.amber),
+                                spacerwidth(10),
+                                Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Center(
+                                        child:
+                                            Icon(Icons.more_vert, size: 30))),
+                                spacerwidth(10),
+                              ],
+                            ),
                           ),
-                          child: const Center(
-                              child: Icon(Icons.more_vert, size: 30))),
-                      spacerwidth(10),
-                    ],
-                  ),
-                ),
               ),
               spacerheight(20),
               Text(
@@ -191,22 +240,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container minilangeContainer(
-      BuildContext context, String langName, Color colors) {
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        color: colors,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(
-        child: Text(
-          langName,
-          style: primarystyle.copyWith(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+  Widget minilangeContainer(
+      BuildContext context, Langue langage, Color colors) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            PageTransition(
+                child: LangageNiveau(langue: langage),
+                type: PageTransitionType.leftToRight));
+      },
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: colors,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text(
+            langage.langue_name.trim()[0],
+            style: primarystyle.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -214,15 +272,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget langeContainer(BuildContext contextc,
-      {required String lang_name,
-      required int lang_nom,
-      Color colors = Colors.green}) {
+      {required Langue langue, Color colors = Colors.green}) {
     return InkWell(
       onTap: () {
         Navigator.push(
             context,
             PageTransition(
-                child: LangageNiveau(langue: lang_name),
+                child: LangageNiveau(langue: langue),
                 type: PageTransitionType.leftToRight));
       },
       child: Container(
@@ -257,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white),
                 child: Center(
                   child: Text(
-                    "$lang_nom",
+                    "10",
                     style: primarystyle.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -269,7 +325,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
               child: Text(
-                lang_name,
+                langue.langue_name,
                 style: primarystyle.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -279,10 +335,13 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
               child: Text(
-                'Description de la langue concernée et indications diverses.',
+                "Région d'origine : ${(langue.langue_origine == null || langue.langue_origine!.trim().isEmpty) ? 'Pas d\'origine précisé' : langue.langue_origine}",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: primarystyle.copyWith(color: Colors.white, fontSize: 12),
+                style: primarystyle.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600),
               ),
             )
           ],

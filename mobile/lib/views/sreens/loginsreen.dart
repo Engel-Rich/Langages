@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/commons/fonctions.dart';
@@ -73,6 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             : null;
                   },
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'multriix@gmail.com',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -97,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: primarystyle,
                   obscureText: showpass,
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'entrer un mot de passe',
                     suffixIcon: IconButton(
                         onPressed: () => setState(() {
@@ -113,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 spacerheight(20),
                 CheckboxListTile(
                     value: isSessionsave,
+                    controlAffinity: ListTileControlAffinity.leading,
                     title: Text(
                       "Garder ma session",
                       style: primarystyle.copyWith(color: Colors.grey.shade400),
@@ -146,60 +151,50 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 loading = true;
                               });
-                              try {
-                                await UserController()
-                                    .loginUser(
-                                  controllerEmail.text,
-                                  controllerPass.text,
-                                )
-                                    .then((value) async {
-                                  if (value['statu'] == true) {
-                                    await UserController()
-                                        .getUser()
-                                        .then((value) async {
-                                      printer(value);
-                                      if (value != null) {
-                                        final userProvider = UserProvider.user;
-                                        await userProvider
-                                            .saveCurrentUser(value)
-                                            .then((value) {
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                          Navigator.of(context).push(
-                                            PageTransition(
-                                              child: const HomePage(),
-                                              type: PageTransitionType
-                                                  .leftToRight,
-                                            ),
-                                          );
-                                        });
-                                      } else {
+
+                              await UserController()
+                                  .loginUser(
+                                controllerEmail.text,
+                                controllerPass.text,
+                              )
+                                  .then((value) async {
+                                if (value['statu'] == true) {
+                                  await UserController()
+                                      .getUser(context)
+                                      .then((value) async {
+                                    printer(value);
+                                    if (value != null) {
+                                      final userProvider = UserProvider.user;
+                                      userProvider.setCurrentUser(value);
+                                      await userProvider
+                                          .saveCurrentUser(value)
+                                          .then((val) {
                                         setState(() {
                                           loading = false;
                                         });
-                                        toasterError(
-                                            "Impossible de récuperer les données dns le serveur");
-                                      }
-                                    });
-                                  } else {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                    toasterError(value['message']);
-                                  }
-                                });
-                              } on DioException catch (e) {
-                                setState(() {
-                                  loading = false;
-                                });
-                                toasterError(e.message ?? 'Erreur inconnue');
-                              } catch (e) {
-                                setState(() {
-                                  loading = false;
-                                });
-                                toasterError(e.toString());
-                              }
+                                        Navigator.of(context).push(
+                                          PageTransition(
+                                            child: const HomePage(),
+                                            type:
+                                                PageTransitionType.leftToRight,
+                                          ),
+                                        );
+                                      });
+                                    } else {
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      toasterError(context,
+                                          "Impossible de récuperer les données dns le serveur");
+                                    }
+                                  });
+                                } else {
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                  toasterError(context, value['message']);
+                                }
+                              });
                             }
                           },
                         ),

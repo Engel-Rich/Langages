@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Langue;
+use App\Models\Lecon;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,49 +15,53 @@ class LeconController extends RetourController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)    
     {
-        //
+        try {
+            $modules  = Lecon::where('module_id', $request->module_id)->get();
+            return   $this->retournresponse($modules);
+        } catch (\Throwable $th) {
+            return  $this->returnError($th->getMessage());
+        }
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'module' => ['integer', 'required'],
-            'voice' => ['required', 'file'],
-            // 'image' => ['required', 'file'],
-            'title' =>['string', 'required'],
-            'desciption' => 'string'
+            'module_id' => ['integer', 'required'],
+            'lecon_voice' => ['required', 'file'],
+            'lecon_image' => ['file', 'max:5120', 'mimes:png,jpg,jpeg'],
+            'lecon_title' =>['string', 'required'],
+            // 'lecon_description' => 'string'
         ]);
-        if($validator->failed()){
-            $this->returnError($validator->errors(),code:402);
+        if($validator->fails()){
+       return      $this->returnError($validator->errors(),code:402);
         }else{
-            $module = $request->module;
-            $courTitle = $request->title;
-            $courDesc = $request->desciption;
-
+            $module = $request->module_id;
+            $courTitle = $request->lecon_title;
+            $courDesc = $request->lecon_description;
             $isModuleExist = Module::where('module_id', $module)->exists();
             if($isModuleExist){
-                $currentModule = Module::where('module_id', $module)->find()->first();
+                $currentModule = Module::where('module_id', $module)->first();
                 
                try {
-                $courVoice  = (string)Str::uuid().'.'. $request->voice->extension();
-                $voice = Storage::url($request->file('voice')->storeAs('Lecons/'.$currentModule->langue_id.'/'.$module, $$courVoice,'public') )    ;            
+                $courVoice  = (string)Str::uuid().'.'. $request->file('lecon_voice')->extension();
+                $voice = Storage::url($request->file('lecon_voice')->storeAs('Lecons/'.$currentModule->langue_id.'/'.$module, $courVoice,'public') )    ;            
                 
-                Langue::create([
+                Lecon::create([
                     'module_id'=>$module,
                     'lecon_title'=>$courTitle,
                     'lecon_voice'=>$voice,
                     'lecon_description'=>$courDesc
                 ]);
                } catch (\Throwable $th) {
-                $this->returnError($th->getMessage());
+                return $this->returnError($th->getMessage());
                }
             }else{
-                $this->returnError('Undefine', message: 'Le module n\'as pas été trouvé', code: 402);
+                return $this->returnError('Undefine', message: 'Le module n\'as pas été trouvé', code: 402);
             }
         }
     }
@@ -64,7 +69,7 @@ class LeconController extends RetourController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
         //
     }

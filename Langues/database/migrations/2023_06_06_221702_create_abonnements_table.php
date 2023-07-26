@@ -28,8 +28,8 @@ return new class extends Migration
 
              //eleve foreign key 
 
-             $table->unsignedBigInteger('eleve_id');
-             $table->foreign('eleve_id')->references('eleve_id')->on('eleves')->onDelete('cascade');
+             $table->unsignedBigInteger('user_id');
+             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
         });
     }
 

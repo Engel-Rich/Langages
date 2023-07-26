@@ -30,6 +30,6 @@ class Module extends Model
     protected $primarykey = 'module_id';
     
 
-    protected $fillable = ['langue_id','module_title','module_image'];
+    protected $fillable = ['langue_id','module_title','module_image','module_prix'];
 
 }

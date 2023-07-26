@@ -25,7 +25,7 @@ class User extends Authenticatable
         'password',
         'ville',
         'user_key_generate',
-        'phone'
+        'phone', 'profile_image'
     ];
 
     /**
@@ -38,7 +38,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    
+
     /**
      * The attributes that should be cast.
      *
@@ -54,18 +54,19 @@ class User extends Authenticatable
 
     // relationsheep 
 
-    public function paiements():HasMany
+    public function paiements(): HasMany
     {
-        return $this->hasMany(Paiement::class, 'paiement_id','user_id');
+        return $this->hasMany(Paiement::class, 'paiement_id', 'user_id');
     }
 
-    public function eleve():HasOne
+
+    public function professeur(): HasOne
     {
-        return $this->hasOne(Eleve::class, 'eleve_id','eleve_id');
+        return $this->hasOne(Professeur::class, 'user_id');
     }
 
-    public function professeur():HasOne{
-        return $this->hasOne(Professeur::class, 'prof_id', 'user_id');
+    public function abonnements(): HasMany
+    {
+        return $this->hasMany(Abonnement::class, 'abonnement_id', 'user_id');
     }
-
 }

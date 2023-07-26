@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:mobile/models/users.dart';
 import 'package:mobile/views/sreens/homepage.dart';
 import 'package:page_transition/page_transition.dart';
@@ -28,6 +30,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool conditionsread = false;
   bool showpass = false;
   bool loading = false;
+
+  PhoneNumber? numero;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +78,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         : null;
                   },
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'entrer le nom',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -98,6 +104,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             : null;
                   },
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'multriix@gmail.com',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -110,22 +118,22 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight: FontWeight.bold,
                         color: Colors.grey.shade600)),
                 spacerheight(10),
-                TextFormField(
-                  controller: controllerPhone,
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^[+0-9]+$'))
-                  ],
-                  maxLength: 13,
+                IntlPhoneField(
+                  initialCountryCode: "CM",
+                  onChanged: (val) {
+                    numero = val;
+                  },
                   style: primarystyle,
                   validator: (val) {
-                    return val == null ||
-                            val.trim().isEmpty ||
-                            val.trim().length < 9
-                        ? 'La ville est obligatoire '
-                        : null;
+                    return val == null
+                        ? 'Le numéro de téléphone est obligatoire'
+                        : !val.isValidNumber()
+                            ? 'Entrer un numéro de téléphone correcte'
+                            : null;
                   },
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'Entrer votre numéro de téléphone',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -149,6 +157,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         : null;
                   },
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'entrer votre ville de résidence',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -173,6 +183,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: primarystyle,
                   obscureText: showpass,
                   decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                     hintText: 'entrer un mot de passe',
                     suffixIcon: IconButton(
                         onPressed: () => setState(() {
@@ -189,6 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 spacerheight(20),
                 CheckboxListTile(
                     value: conditionsread,
+                    controlAffinity: ListTileControlAffinity.leading,
                     title: Text(
                       "J'accepte la politique d'utilisation",
                       style: primarystyle.copyWith(color: Colors.grey.shade400),
@@ -229,18 +242,19 @@ class _RegisterPageState extends State<RegisterPage> {
                                 userName: controllerName.text,
                                 ville: controllerVille.text,
                                 password: controllerPass.text,
-                                phone: controllerPhone.text,
+                                phone: numero!.completeNumber,
                               );
                               await UserController()
                                   .registerUser(userApp)
                                   .then((value) async {
                                 if (value['statu'] == true) {
                                   await UserController()
-                                      .getUser()
+                                      .getUser(context)
                                       .then((value) async {
                                     printer(value);
                                     if (value != null) {
                                       final userProvider = UserProvider.user;
+                                      userProvider.setCurrentUser(value);
                                       await userProvider
                                           .saveCurrentUser(value)
                                           .then((value) {
@@ -259,7 +273,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       setState(() {
                                         loading = false;
                                       });
-                                      toasterError(
+                                      toasterError(context,
                                           "Impossible de récuperer les données dns le serveur");
                                     }
                                   });
@@ -267,7 +281,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   setState(() {
                                     loading = false;
                                   });
-                                  toasterError(value['message']);
+                                  toasterError(context, value['message']);
                                 }
                               });
                             }

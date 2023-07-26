@@ -18,12 +18,14 @@ class ProfMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        try {
+        try {            
             $iduser = $request->user()->user_id;
+            
+            $isAdmin  = Admin::where('user_id', $iduser)->exists();
         $isProf  = Professeur::where('user_id', $iduser)->exists();
-        $isAdmin  = Admin::where('user_id', $iduser)->exists();
-        if ($isProf)
-            return $next($request || $isAdmin);
+        
+        if ($isProf || $isAdmin)
+            return $next($request);
         else
             return response()->json(['message' => "authorization denied"], 403);
         } catch (\Throwable $th) {

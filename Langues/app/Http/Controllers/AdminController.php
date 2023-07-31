@@ -17,7 +17,7 @@ class AdminController extends RetourController
       
        try {
         $validat = Validator::make($request->all(), [
-            'user_id' => ['required', 'integer']
+            ' ' => ['required', 'integer']
         ] );
 
         if($validat->failed()){

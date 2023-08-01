@@ -33,5 +33,5 @@ class Paiement extends Model
 
     protected $primarykey = 'paiement_id';
 
-    protected $fillable = ['paiement_amount', 'paiement_ref', 'paiement_status','paiement_motif','user_id'];
+    protected $fillable = ['paiement_amount', 'paiement_ref', 'paiement_status','paiement_motif','module_id', 'user_id'];
 }

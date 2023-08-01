@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Abonnement;
+use App\Models\Langue;
+use App\Models\Module;
+use App\Models\Paiement;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -94,6 +98,31 @@ class UserController extends RetourController
         } catch (\Throwable $th) {
             return     $this->returnError($th->getMessage(), message: 'Error' . $th, code: 403);
         }
+    }
+
+    public function get_user_abonnement(Request $request)
+    {
+    $id = $request->user()->user_id;
+    
+    $abonnements = Abonnement::where('user_id', $id)->get();
+    $finalList = [];
+    foreach ($abonnements as $abonnement) {
+        
+
+        $paiements_id = $abonnement->paiement_id;
+        
+        $paiements = Paiement::where('paiement_id', $paiements_id)->first();
+        $module = Module::where('module_id', $paiements->module_id)->first();
+        $langue = Langue::where('langue_id', $module->langue_id)->first();
+        array_push($finalList, [
+        'Langues' => $langue,
+        'Module'=> $module,
+        'Paiement' => $paiements,
+        ]);
+    }
+
+    return $this->retournresponse($finalList);;
+
     }
 
 

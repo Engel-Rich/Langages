@@ -17,10 +17,10 @@ class AdminController extends RetourController
       
        try {
         $validat = Validator::make($request->all(), [
-            ' ' => ['required', 'integer']
+            'user_id' => ['required', 'integer']
         ] );
 
-        if($validat->failed()){
+        if($validat->fails()){
             return $this->returnError($validat->errors(), code:402);
         }else{
             $user = User::where('user_id', $request->user_id)->exists();

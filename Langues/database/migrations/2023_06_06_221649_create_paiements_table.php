@@ -19,7 +19,12 @@ return new class extends Migration
             $table->string('paiement_motif')->default('paiement pour une langue');            
             $table->timestamps();
 
+            // cle etrangere pour le modue 
 
+            $table->unsignedBigInteger('module_id');
+            $table->foreign('module_id')->references('module_id')->on('modules')->onDelete('cascade');
+
+            // cle etrangere pour le user
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProfesseurController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AbonnementController;
 use App\Models\Professeur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +49,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::resource('/lecons', LeconController::class)->only(['store', 'update', 'destroy']);
         Route::post('/langue/create', [LangueController::class, 'create']);
     });
+
+    Route::get('paiement/get/{type}', [PaiementController::class, 'index']);
+    Route::post('paiement/actif', [PaiementController::class, 'actif_paiement']);
+    Route::post('paiement/create', [PaiementController::class, 'create']);
+    Route::post('abonnement/create', [AbonnementController::class, 'create']);
+    Route::get('abonnement/get/all', [UserController::class, 'get_user_abonnement']);
 });
+
 
 
 

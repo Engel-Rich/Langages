@@ -18,14 +18,10 @@ return new class extends Migration
             $table->timestamps();
 
 
-            $table->unsignedBigInteger('paiement_id');
+            $table->unsignedBigInteger('paiement_id')->require();
             $table->foreign('paiement_id')->references('paiement_id')->on('paiements')->onDelete('cascade');
 
-            //langue foreign key 
-
-            $table->unsignedBigInteger('langue_id');
-            $table->foreign('langue_id')->references('langue_id')->on('langues')->onDelete('cascade');
-
+            
              //eleve foreign key 
 
              $table->unsignedBigInteger('user_id');

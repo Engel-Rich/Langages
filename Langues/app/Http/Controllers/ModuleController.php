@@ -57,6 +57,8 @@ class ModuleController extends RetourController
                         'langue_id' => $langue
                     ]);
     
+                return  $this->retournresponse('module ajouté avec succès');
+
                 } catch (\Throwable $th) {
                     return $this->returnError($th->getMessage(), message: 'erreur inconnue', code: 500);
                 }

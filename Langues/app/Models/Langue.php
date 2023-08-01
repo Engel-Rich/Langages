@@ -39,10 +39,10 @@ class Langue extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function abonnements(): HasMany
-    {
-        return $this->hasMany(Abonnement::class, 'abonnement_id', 'langue_id');
-    }
+    // public function abonnements(): HasMany
+    // {
+    //     return $this->hasMany(Abonnement::class, 'abonnement_id', 'langue_id');
+    // }
     // Database Configurations 
 
     protected $primaryKey='langue_id' ;

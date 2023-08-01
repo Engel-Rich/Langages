@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Abonnement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class AbonnementController extends Controller
+class AbonnementController extends RetourController
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +19,14 @@ class AbonnementController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($paiement_id, $user_id)
     {
-        //
+        try {
+           
+            return  $this->retournresponse('abonnement réussi');
+        }catch (\Throwable $th) {
+            return  $this->returnError(''.$th->getMessage(), message: $th->getMessage()??"Erreur inconue survenue lors de l'exécution de la requette");
+        }
     }
 
     /**

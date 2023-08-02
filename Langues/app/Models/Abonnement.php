@@ -16,7 +16,7 @@ class Abonnement extends Model
 
     protected $primarykey = 'abonnement_id';
 
-    protected $fillable = ['user_id', 'paiement_id',  'abonnement_date'];
+    protected $fillable = ['user_id', 'paiement_id', 'module_id' , 'abonnement_date'];
 
 
     // relation sheep

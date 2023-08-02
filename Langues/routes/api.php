@@ -9,6 +9,8 @@ use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProfesseurController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AbonnementController;
+use App\Models\Langue;
+use App\Models\Module;
 use App\Models\Professeur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +57,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('paiement/create', [PaiementController::class, 'create']);
     Route::post('abonnement/create', [AbonnementController::class, 'create']);
     Route::get('abonnement/get/all', [UserController::class, 'get_user_abonnement']);
+
+
+
+    Route::post('user/update/{id}', [UserController::class, 'update_profile_image']);
+    Route::post('update/user/{id}', [UserController::class, 'update_user_infos']);
+    Route::post('module/update/{id}', [ModuleController::class, 'update_module_image']);
+    Route::put('langue/update/{id}', [LangueController::class, 'update_langue_image']);
 });
 
 

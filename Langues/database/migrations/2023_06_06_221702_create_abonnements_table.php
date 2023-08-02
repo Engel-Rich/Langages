@@ -21,6 +21,10 @@ return new class extends Migration
             $table->unsignedBigInteger('paiement_id')->require();
             $table->foreign('paiement_id')->references('paiement_id')->on('paiements')->onDelete('cascade');
 
+
+
+            $table->unsignedBigInteger('module_id')->require();
+            $table->foreign('module_id')->references('module_id')->on('modules')->onDelete('cascade');
             
              //eleve foreign key 
 

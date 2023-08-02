@@ -10,7 +10,9 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -25,7 +27,7 @@ class UserController extends RetourController
             $userlist =  User::all();
             return $this->retournresponse($userlist);
         } catch (\Throwable $th) {
-            $this->returnError(''.$th->getMessage());
+            $this->returnError('' . $th->getMessage());
         }
         // dd($userlist);
     }
@@ -39,11 +41,11 @@ class UserController extends RetourController
     {
         try {
             $validate = Validator::make($request->all(), [
-                'phone'=> ['required','string','min:9','max:13'],
+                'phone' => ['required', 'string', 'min:9', 'max:13'],
                 "name" => 'required',
                 'email' => ['required', 'unique:users'],
                 'password' => 'required|min:6|max:35',
-                'ville' => 'required|string|min:3',                
+                'ville' => 'required|string|min:3',
             ]);
 
             if ($validate->fails()) {
@@ -54,19 +56,19 @@ class UserController extends RetourController
                 $user = User::create([
                     'name' => $request->name,
                     'email' => $request->email,
-                    'ville'=>$request->ville,
+                    'ville' => $request->ville,
                     'user_key_generate' => (string)$uniquekey,
-                    'password' => Hash::make($request->password),  
-                    'phone'=>$request->phone                  
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone
                 ]);
-               
+
                 return $this->retournresponse([
                     'token' => $user->createToken("MON API DE LANGUES NATURELLES")->plainTextToken,
                     'idgenere' => $uniquekey,
                 ]);
             }
         } catch (\Throwable $th) {
-            return  $this->returnError(''.$th->getMessage(), message: $th->getMessage()??"Erreur inconue survenue lors de l'exécution de la requette");
+            return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
         }
     }
 
@@ -102,36 +104,75 @@ class UserController extends RetourController
 
     public function get_user_abonnement(Request $request)
     {
-    $id = $request->user()->user_id;
-    
-    $abonnements = Abonnement::where('user_id', $id)->get();
-    $finalList = [];
-    foreach ($abonnements as $abonnement) {
-        
+        $id = $request->user()->user_id;
 
-        $paiements_id = $abonnement->paiement_id;
-        
-        $paiements = Paiement::where('paiement_id', $paiements_id)->first();
-        $module = Module::where('module_id', $paiements->module_id)->first();
-        $langue = Langue::where('langue_id', $module->langue_id)->first();
-        array_push($finalList, [
-        'Langues' => $langue,
-        'Module'=> $module,
-        'Paiement' => $paiements,
-        ]);
-    }
+        $abonnements = Abonnement::where('user_id', $id)->get();
+        $finalList = [];
+        foreach ($abonnements as $abonnement) {
 
-    return $this->retournresponse($finalList);;
 
+            $paiements_id = $abonnement->paiement_id;
+
+            $paiements = Paiement::where('paiement_id', $paiements_id)->first();
+            $module = Module::where('module_id', $abonnement->module_id)->first();
+            $langue = Langue::where('langue_id', $module->langue_id)->first();
+            array_push($finalList, [
+                'Langues' => $langue,
+                'Module' => $module,
+                'Paiement' => $paiements,
+            ]);
+        }
+
+        return $this->retournresponse($finalList);;
     }
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function update_user_infos(Request $request, $id)
     {
-        //
+        try {
+            $validate = Validator::make($request->all(), [
+                'phone' => ['required', 'string', 'min:9', 'max:13'],
+                "name" => 'required',
+                'email' => ['required', 'unique:users'],
+                'password' => 'required|min:6|max:35',
+                'ville' => 'required|string|min:3',
+            ]);
+
+            if ($validate->fails()) {
+                return     $this->returnError($validate->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
+            } else {
+                $uniquekey = (string) Str::uuid();
+
+                $user = User::find($id);
+                    $user->name = $request->name;
+                    $user->email = $request->email;
+                    $user->ville = $request->ville;
+                    $user->user_key_generate = (string)$uniquekey;
+                    $user->password = Hash::make($request->password);
+                    $user->phone = $request->phone;
+                    $user->save();
+                
+
+                return $this->retournresponse([
+                    'token' => $user->createToken("MON API DE LANGUES NATURELLES")->plainTextToken,
+                    'idgenere' => $uniquekey,
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
+        }
+    }
+
+    
+    public function delete_user($id)
+    {
+        $user = User::find($id);
+        $user->delete();
+        
+        return $this->retournresponse('suppression réussi');
     }
 
     /**
@@ -152,7 +193,7 @@ class UserController extends RetourController
      */
     public function show(Request $request)
     {
-        return $this->retournresponse($request->user());    
+        return $this->retournresponse($request->user());
     }
 
     /**
@@ -166,9 +207,31 @@ class UserController extends RetourController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update_profile_image(Request $request, $id)
     {
-        //
+        $validation = Validator::make($request->all(), [
+            'profile_image' => 'file|required|mimes:jpeg,png,jpg,svg|max:2560',
+        ]);
+
+
+        if ($validation->fails()) {
+            // return $this->retournresponse($request->all());
+            return     $this->returnError($validation->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
+        } else {
+
+
+            $name = (string)Str::uuid() . '.' . $request->file('profile_image')->extension();
+
+            $url = Storage::url($request->file('profile_image')->storeAs('profile_image', $name, 'public'));
+
+            $user = User::where('user_id', $id)->first();
+
+            $user->user_id = $id;
+            $user->profile_image = $url;
+            $resultat = $user->save();
+
+            return  $this->retournresponse($user);
+        }
     }
 
     /**

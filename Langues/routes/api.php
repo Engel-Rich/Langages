@@ -60,10 +60,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-    Route::post('user/update/{id}', [UserController::class, 'update_profile_image']);
-    Route::post('update/user/{id}', [UserController::class, 'update_user_infos']);
-    Route::post('module/update/{id}', [ModuleController::class, 'update_module_image']);
-    Route::put('langue/update/{id}', [LangueController::class, 'update_langue_image']);
+    Route::post('user/update/profile/{id}', [UserController::class, 'update_profile_image']);
+    Route::post('user/update/infos/{id}', [UserController::class, 'update_user_infos']);
+    Route::post('module/update/image/{id}', [ModuleController::class, 'update_module_image']);
+    Route::post('module/update/infos/{id}', [ModuleController::class, 'update_module_infos']);
+    Route::post('langue/update/image/{id}', [LangueController::class, 'update_langue_image']);
+    Route::post('langue/update/infos/{id}', [LangueController::class, 'update_langue_infos']);
+
+    Route::delete('delete/user/{id}', [UserController::class, 'delete_user']);
+    Route::delete('delete/module/{id}', [ModuleController::class, 'delete_module']);
+    Route::delete('delete/langue/{id}', [LangueController::class, 'delete_langue']);
+    
 });
 
 

@@ -73,13 +73,13 @@ class LangueController extends RetourController
 
             $url = Storage::url($request->file('langue_image')->storeAs('langue_image', $name, 'public'));
 
-            $user = User::where('user_id', $id)->first();
+            $langue = Langue::find($id);
 
-            $user->user_id = $id;
-            $user->langue_image = $url;
-            $resultat = $user->save();
+            $langue->langue_id = $id;
+            $langue->langue_image = $url;
+            $resultat = $langue->save();
 
-            return  $this->retournresponse($user);
+            return  $this->retournresponse($langue);
         }
     }
 

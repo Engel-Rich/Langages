@@ -85,11 +85,14 @@ class ModuleController extends RetourController
 
             $url = Storage::url($request->file('module_image')->storeAs('module_image', $name, 'public'));
 
-            $module = Module::where('module_id', $id)->first();
+            $module = Module::where('module_id', $id)->update([
+                'module_id' => $id,
+                'module_image' => $url
+            ]);
 
-            $module->module_id = $id;
-            $module->module_image = $url;
-            $resultat = $module->save();
+            // $module->module_id = $id;
+            // $module->module_image = $url;
+            // $resultat = $module->save();
 
             return  $this->retournresponse($module);
         }
@@ -101,7 +104,6 @@ class ModuleController extends RetourController
             'langue_id' => ['required', 'integer'],
             'module_prix' => ['required', 'numeric'],
             'module_title' => ['required', 'string', 'min:3'],
-            'module_image' => ['file', 'max:5120', 'mimes:png,jpg,jpeg']
         ]);
 
         if ($validator->fails()) {
@@ -116,17 +118,18 @@ class ModuleController extends RetourController
                 $hasImage = $request->file('module_image') != null;
 
                 try {
-                    $name_image = $hasImage ? (string)Str::uuid() . '.' . $request->file('iamge')->extension() : null;
-                    $file = $hasImage ? Storage::url($request->file('module_image')->storeAs('Modules/' . $langue, $name_image, 'public')) : null;
-                    $module = Module::find($id);
-                    $module->module_prix = $prix;
-                    $module->module_title = $name;
-                    $module->module_image = $file;
-                    $module->langue_id = $langue;
+                    $module = Module::where('module_id', $id)->update([
+                        'module_prix'=> $prix,
+                        'module_title' => $name,
+                        'langue_id' => $langue
+                    ]);
+                    // $module->module_prix = $prix;
+                    // $module->module_title = $name;
+                    // $module->langue_id = $langue;
                     
-                    $module->save();
+                
 
-                    return  $this->retournresponse('module modifié avec succès');
+                    return  $this->retournresponse($module);
                 } catch (\Throwable $th) {
                     return $this->returnError($th->getMessage(), message: 'erreur inconnue', code: 500);
                 }
@@ -139,7 +142,7 @@ class ModuleController extends RetourController
     
     public function delete_module($id)
     {
-        $module = Module::find($id);
+        $module = Module::where('module_id', $id);
         $module->delete();
 
         return $this->retournresponse('suppression réussi');

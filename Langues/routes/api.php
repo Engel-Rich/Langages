@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('abonnement/create', [AbonnementController::class, 'create']);
     Route::get('abonnement/get/all', [UserController::class, 'get_user_abonnement']);
 
+    Route::post('send/message', [PaiementController::class, 'send_ref_to_user']);
 
 
     Route::post('user/update/profile/{id}', [UserController::class, 'update_profile_image']);

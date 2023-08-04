@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\AbonnementController;
+use App\Models\User;
 use Exception;
 
 class PaiementController extends RetourController
@@ -36,7 +37,8 @@ class PaiementController extends RetourController
         try {
             $validate = Validator::make($request->all(), [
                 'paiement_amount' => ['required', 'integer'],
-                'module_id' => ['required', 'integer']
+                'module_id' => ['required', 'integer'],
+                'phone' => ['required', 'integer','min:9', 'max:13']
             ]);
 
             if ($validate->fails()) {
@@ -64,7 +66,8 @@ class PaiementController extends RetourController
                             'module_id' => $request->module_id,
                             'paiement_ref' => $uniquekey,
                             // 'paiement_motif' => $request->,
-                            'user_id' => $request->user()->user_id
+                            'user_id' => $request->user()->user_id,
+                            'phone' => $request->phone
                         ]);
 
                         return $this->retournresponse($paiement_creer);
@@ -136,10 +139,42 @@ class PaiementController extends RetourController
      * Send reference by SMS to user who want to activate lecon
      */
 
-     public function send_ref_to_user(Request $request) {                
+    public function send_ref_to_user(Request $request)
+    {
+
+
+        try {
+
+            $validate = validator::make($request->all(), [
+                'paiement_id' => 'integer|required',
+                'phone' => 'integer|required',
+            ]);
+
+            $paiement_id = $request->paiement_id;
+            $phone = $request->phone;
+
+
+            if ($validate->fails()) {
+                return     $this->returnError($validate->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
+            } else {
+
+                $exists = Paiement::where('paiement_id', $paiement_id)->where('phone', $phone)->exists();
+
+                if ($exists) {
+
+                    Paiement::where('phone', $phone)->update(['has_code_send' => true]);
+                } else {
+                    return $this->returnError('le paiement indexé n\'existe pas');
+                }
+            }
+        } catch (\Throwable $th) {
+            return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
+        }
 
         //TODO Envoyer un SMS au user.
-     }
+
+
+    }
 
     /**
      * Store a newly created resource in storage.

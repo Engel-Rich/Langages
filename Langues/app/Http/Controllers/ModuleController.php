@@ -123,6 +123,7 @@ class ModuleController extends RetourController
                         'module_title' => $name,
                         'langue_id' => $langue
                     ]);
+                    
                     // $module->module_prix = $prix;
                     // $module->module_title = $name;
                     // $module->langue_id = $langue;

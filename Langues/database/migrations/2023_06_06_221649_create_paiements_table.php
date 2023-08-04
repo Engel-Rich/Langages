@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('paiement_ref')->unique();
             $table->boolean('paiement_status')->default(false);
             $table->boolean('has_code_send')->default(false);
-            $table->string('paiement_motif')->default('paiement pour une langue');            
+            $table->string('paiement_motif')->default('paiement pour une langue');      
+            $table->integer('phone');
             $table->timestamps();
 
             // cle etrangere pour le modue 
@@ -28,6 +29,8 @@ return new class extends Migration
             // cle etrangere pour le user
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+
+
 
         });
     }

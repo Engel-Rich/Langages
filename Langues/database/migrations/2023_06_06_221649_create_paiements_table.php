@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('paiement_amount');
             $table->string('paiement_ref')->unique();
             $table->boolean('paiement_status')->default(false);
+            $table->boolean('has_code_send')->default(false);
             $table->string('paiement_motif')->default('paiement pour une langue');            
             $table->timestamps();
 

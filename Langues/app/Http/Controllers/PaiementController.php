@@ -51,9 +51,9 @@ class PaiementController extends RetourController
                 } while (Paiement::where('paiement_ref', $uniquekey)->exists());
                 try {
 
-                    $user_id = $request->module_id;
+                    $module_id = $request->module_id;
 
-                    $module_id = $request->user()->user_id;
+                    $user_id  = $request->user()->user_id;
 
                     $suscription = Abonnement::where('user_id', $user_id)->where('module_id', $module_id)->exists();
 
@@ -67,17 +67,14 @@ class PaiementController extends RetourController
                             'user_id' => $request->user()->user_id
                         ]);
 
-                        return $this->retournresponse($paiement_creer); 
-
-                    }else{
+                        return $this->retournresponse($paiement_creer);
+                    } else {
                         //throw new Exception( "Vous êtes déjà abonné à ce module", 1);
-                      return  $this->returnError('vous êtes déjà abonné à ce module', code: 402);
+                        return  $this->returnError('vous êtes déjà abonné à ce module', code: 402);
                     }
-
                 } catch (\Throwable $th) {
 
                     return     $this->returnError($th->getMessage(), message: 'Error survenu' . $th, code: 402);
-
                 }
             }
         } catch (\Throwable $th) {
@@ -92,39 +89,58 @@ class PaiementController extends RetourController
         try {
 
             $validate = validator::make($request->all(), [
-                'paiement_id' => ['required', 'integer']
+                // 'paiement_id' => ['required', 'integer'],
+                'paiement_ref' => 'string|required'
             ]);
 
             if ($validate->fails()) {
                 return     $this->returnError($validate->errors(), message: 'Erreur de lors de la validation des donnes', code: 401);
             } else {
-                $id = $request->paiement_id;
 
-                $paiements = Paiement::where('paiement_id', $id)->first();
+                $ref = $request->paiement_ref;
 
-                $module_id = $paiements->module_id;
+                $paiement_exist = Paiement::where('paiement_ref', $ref)->exists();
 
-                Paiement::where('paiement_id', $id)->update(['paiement_status' => true]);
-                try {
-                    $abonnement =
-                        Abonnement::create([
-                            'paiement_id' => $id,
-                            'module_id' => $module_id,
-                            'user_id' => $request->user()->user_id
-                        ]);
-                    return $this->retournresponse($abonnement);
-                } catch (\Throwable $th) {
-                    return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
-                    //throw $th;
+                if ($paiement_exist) {
+
+                    $paiements = Paiement::where('paiement_ref', $ref)->first();
+
+                    if ($paiements->paiement_status == true) {
+                        return $this->returnError('Ce code n\'est plus valide.');
+                    } else {
+                        $module_id = $paiements->module_id;
+                        Paiement::where('paiement_ref', $ref)->update(['paiement_status' => true]);
+                        try {
+                            $abonnement =
+                                Abonnement::create([
+                                    'paiement_id' => $paiements->paiement_id,
+                                    'module_id' => $module_id,
+                                    'user_id' => $request->user()->user_id
+                                ]);
+                            return $this->retournresponse($abonnement);
+                        } catch (\Throwable $th) {
+                            return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
+                            //throw $th;
+                        }
+                    }
+                } else {
+                    return $this->returnError("Impossible d'utiliser votre code");
                 }
-
-
-                //    $reponse = $abonnement->create($id, $request->user()->user_id);
             }
         } catch (\Throwable $th) {
             return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
         }
     }
+
+    /**
+     * Send reference by SMS to user who want to activate lecon
+     */
+
+     public function send_ref_to_user(Request $request) {                
+
+        //TODO Envoyer un SMS au user.
+     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -165,3 +181,20 @@ class PaiementController extends RetourController
         //
     }
 }
+
+
+// try {
+                //     $abonnement =
+                //         Abonnement::create([
+                //             'paiement_id' => $id,
+                //             'module_id' => $module_id,
+                //             'user_id' => $request->user()->user_id
+                //         ]);
+                //     return $this->retournresponse($abonnement);
+                // } catch (\Throwable $th) {
+                //     return  $this->returnError('' . $th->getMessage(), message: $th->getMessage() ?? "Erreur inconue survenue lors de l'exécution de la requette");
+                //     //throw $th;
+                // }
+
+
+                //    $reponse = $abonnement->create($id, $request->user()->user_id);

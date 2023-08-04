@@ -24,3 +24,22 @@ ElevatedButton bouttonCommun({
           )),
       child: Text(tittle, style: primarystyle),
     );
+
+Widget button2(
+  String title,
+  void Function()? onPressed,
+) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+    child: Text(
+      title,
+      style: primarystyle,
+    ),
+  );
+}

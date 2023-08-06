@@ -11,6 +11,8 @@ import 'package:mobile/views/sreens/lecons_langues.dart';
 import 'package:mobile/views/sreens/user_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'lecture.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -52,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                   context,
                   PageTransition(
-                      child: const UserScreen(),
+                      child: const LectureScreen(),
                       type: PageTransitionType.leftToRight));
             },
             child: const CircleAvatar(
@@ -72,7 +74,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               spacerheight(15),
               Text(
-                'Bonjour ${UserProvider.user.currenUser!.userName}',
+                //  ${UserProvider.user.currenUser!.userName}
+                'Bonjour',
                 style: primarystyle.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -215,24 +218,28 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 20, fontWeight: FontWeight.bold),
               ),
               spacerheight(15),
-              leconModel(Colors.indigo, 'BL1', 'Leçon 1',
-                  'Description de la leçon associé'),
-              spacerheight(10),
-              leconModel(Colors.red, 'BL1', 'Leçon 1',
-                  'Description de la leçon associé'),
-              spacerheight(10),
-              leconModel(Colors.yellow, 'BL1', 'Leçon 1',
-                  'Description de la leçon associé'),
-              spacerheight(10),
-              leconModel(Colors.amber, 'BL1', 'Leçon 1',
-                  'Description de la leçon associé'),
-              spacerheight(10),
-              leconModel(Colors.deepOrange, 'BL1', 'Leçon 1',
-                  'Description de la leçon associé'),
-              spacerheight(10),
-              leconModel(Colors.orange, 'BL1', 'Leçon 1',
-                  'Description de la leçon associé'),
-              spacerheight(10),
+              Center(child: Image.asset('assets/image6.jpg')),
+              const Center(
+                  child: Text("Vous n'avez pas encore commencé de cours"))
+
+              // leconModel(Colors.indigo, 'BL1', 'Leçon 1',
+              //     'Description de la leçon associé'),
+              // spacerheight(10),
+              // leconModel(Colors.red, 'BL1', 'Leçon 1',
+              //     'Description de la leçon associé'),
+              // spacerheight(10),
+              // leconModel(Colors.yellow, 'BL1', 'Leçon 1',
+              //     'Description de la leçon associé'),
+              // spacerheight(10),
+              // leconModel(Colors.amber, 'BL1', 'Leçon 1',
+              //     'Description de la leçon associé'),
+              // spacerheight(10),
+              // leconModel(Colors.deepOrange, 'BL1', 'Leçon 1',
+              //     'Description de la leçon associé'),
+              // spacerheight(10),
+              // leconModel(Colors.orange, 'BL1', 'Leçon 1',
+              //     'Description de la leçon associé'),
+              // spacerheight(10),
             ],
           ),
         ),

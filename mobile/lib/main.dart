@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/providers/tokenprovider.dart';
+import 'package:mobile/views/sreens/activation.dart';
 import 'package:mobile/views/sreens/homepage.dart';
 import 'package:mobile/views/sreens/initialpage.dart';
+import 'package:mobile/views/sreens/lecture.dart';
+import 'package:mobile/views/sreens/paiementScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,17 +23,16 @@ class MyApp extends StatelessWidget {
       initState: (context) => UserProvider.user.getToken(),
       builder: (context) {
         return GetMaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.system,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: UserProvider.user.tokenuser == null
-              ? const InitialScreen()
-              : const HomePage(),
-        );
+            title: 'Langue',
+            debugShowCheckedModeBanner: false,
+            themeMode: ThemeMode.system,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: UserProvider.user.tokenuser == null
+                ? const HomePage()
+                : const InitialScreen());
       },
     );
   }

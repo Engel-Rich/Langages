@@ -200,8 +200,7 @@ class UserController extends RetourController
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {
-        //
+    {        //
     }
 
     /**

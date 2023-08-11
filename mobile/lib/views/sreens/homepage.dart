@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                   context,
                   PageTransition(
-                      child: const LectureScreen(),
+                      child: const UserScreen(),
                       type: PageTransitionType.leftToRight));
             },
             child: const CircleAvatar(
@@ -74,8 +74,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               spacerheight(15),
               Text(
-                //  ${UserProvider.user.currenUser!.userName}
-                'Bonjour',
+                //
+                'Bonjour ${UserProvider.user.currenUser!.userName}',
                 style: primarystyle.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

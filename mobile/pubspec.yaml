@@ -48,6 +48,8 @@ dependencies:
   carousel_slider: ^4.2.1
   flutter_spinkit: ^5.2.0
   audioplayers: ^5.0.0
+  path_provider: ^2.1.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

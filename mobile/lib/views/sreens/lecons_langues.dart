@@ -60,76 +60,6 @@ class _LeconLangageState extends State<LeconLangage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: Container(
-      //   color: const Color.fromARGB(31, 168, 166, 166),
-      //   child: SingleChildScrollView(
-      //     child: Column(children: [
-      //       Stack(
-      //         children: [
-      //           Container(
-      //             height: MediaQuery.of(context).size.height * 0.1,
-      //             // color: Colors.blueAccent,
-      //           ),
-      //           Container(
-      //             margin:
-      //                 const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //               children: [
-      //                 IconButton(
-      //                   onPressed: () {
-      //                     Navigator.pop(
-      //                       context,
-      //                     );
-      //                   },
-      //                   icon: const Icon(
-      //                     Icons.arrow_back_ios,
-      //                     size: 25,
-      //                   ),
-      //                 ),
-      //                 const Text(
-      //                   'B U L U',
-      //                   style: TextStyle(
-      //                       fontSize: 17, fontWeight: FontWeight.bold),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //       Container(
-      //         height: MediaQuery.of(context).size.height,
-      //         padding: const EdgeInsets.all(8),
-      //         decoration: const BoxDecoration(
-      //             color: Colors.white,
-      //             borderRadius:
-      //                 BorderRadius.vertical(top: Radius.circular(50))),
-      //         child: Column(
-      //           children: [
-      //             leconModelReading(Colors.indigo, 'BL1', 'Leçon 1',
-      //                 'Description de la leçon associé', 0.25),
-      //             spacerheight(10),
-      //             leconModelReading(Colors.red, 'BL1', 'Leçon 1',
-      //                 'Description de la leçon associé', 0.95),
-      //             spacerheight(10),
-      //             leconModelReading(Colors.yellow, 'BL1', 'Leçon 1',
-      //                 'Description de la leçon associé', 0.58),
-      //             spacerheight(10),
-      //             leconModelReading(Colors.amber, 'BL1', 'Leçon 1',
-      //                 'Description de la leçon associé', 0.65),
-      //             spacerheight(10),
-      //             leconModelReading(Colors.deepOrange, 'BL1', 'Leçon 1',
-      //                 'Description de la leçon associé', 0.83),
-      //             spacerheight(10),
-      //             leconModelReading(Colors.orange, 'BL1', 'Leçon 1',
-      //                 'Description de la leçon associé', 0.75),
-      //             spacerheight(10),
-      //           ],
-      //         ),
-      //       )
-      //     ]),
-      //   ),
-      // ),
       body: NestedScrollView(
         headerSliverBuilder: (context, data) {
           return [
@@ -230,10 +160,8 @@ class _LeconLangageState extends State<LeconLangage> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 12.0, horizontal: 8.0),
                                   child: leconModelReading(
-                                    context,
-                                    lecon,
-                                    langue,
-                                  ),
+                                      context, lecon, langue,
+                                      module: widget.module),
                                 ),
                               ),
                             ],
@@ -246,3 +174,75 @@ class _LeconLangageState extends State<LeconLangage> {
     );
   }
 }
+
+
+// body: Container(
+      //   color: const Color.fromARGB(31, 168, 166, 166),
+      //   child: SingleChildScrollView(
+      //     child: Column(children: [
+      //       Stack(
+      //         children: [
+      //           Container(
+      //             height: MediaQuery.of(context).size.height * 0.1,
+      //             // color: Colors.blueAccent,
+      //           ),
+      //           Container(
+      //             margin:
+      //                 const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+      //             child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //               children: [
+      //                 IconButton(
+      //                   onPressed: () {
+      //                     Navigator.pop(
+      //                       context,
+      //                     );
+      //                   },
+      //                   icon: const Icon(
+      //                     Icons.arrow_back_ios,
+      //                     size: 25,
+      //                   ),
+      //                 ),
+      //                 const Text(
+      //                   'B U L U',
+      //                   style: TextStyle(
+      //                       fontSize: 17, fontWeight: FontWeight.bold),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //       Container(
+      //         height: MediaQuery.of(context).size.height,
+      //         padding: const EdgeInsets.all(8),
+      //         decoration: const BoxDecoration(
+      //             color: Colors.white,
+      //             borderRadius:
+      //                 BorderRadius.vertical(top: Radius.circular(50))),
+      //         child: Column(
+      //           children: [
+      //             leconModelReading(Colors.indigo, 'BL1', 'Leçon 1',
+      //                 'Description de la leçon associé', 0.25),
+      //             spacerheight(10),
+      //             leconModelReading(Colors.red, 'BL1', 'Leçon 1',
+      //                 'Description de la leçon associé', 0.95),
+      //             spacerheight(10),
+      //             leconModelReading(Colors.yellow, 'BL1', 'Leçon 1',
+      //                 'Description de la leçon associé', 0.58),
+      //             spacerheight(10),
+      //             leconModelReading(Colors.amber, 'BL1', 'Leçon 1',
+      //                 'Description de la leçon associé', 0.65),
+      //             spacerheight(10),
+      //             leconModelReading(Colors.deepOrange, 'BL1', 'Leçon 1',
+      //                 'Description de la leçon associé', 0.83),
+      //             spacerheight(10),
+      //             leconModelReading(Colors.orange, 'BL1', 'Leçon 1',
+      //                 'Description de la leçon associé', 0.75),
+      //             spacerheight(10),
+      //           ],
+      //         ),
+      //       )
+      //     ]),
+      //   ),
+      // ),

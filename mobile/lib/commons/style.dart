@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/models/langues.dart';
 import 'package:mobile/models/lecon_model.dart';
+import 'package:mobile/models/module.dart';
+import 'package:mobile/views/sreens/lecture.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 TextStyle primarystyle = GoogleFonts.poppins(fontSize: 15);
@@ -51,13 +54,21 @@ Widget leconModel(
 }
 
 Widget leconModelReading(BuildContext context, Lecon lecon, Langue langue,
-    {double percent = 50 / 100}) {
+    {double percent = 50 / 100, required Module module}) {
   return Container(
     decoration: BoxDecoration(
       color: Colors.blue[50],
       borderRadius: BorderRadius.circular(10),
     ),
     child: ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+              child: LectureScreen(lecon: lecon, module: module),
+              type: PageTransitionType.leftToRight),
+        );
+      },
       trailing: CircularPercentIndicator(
         radius: 25,
         percent: percent,

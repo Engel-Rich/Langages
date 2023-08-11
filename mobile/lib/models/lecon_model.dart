@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 class Lecon {
   int? lecon_id;
   String lecon_title;
+  String lecon_unique_code;
   String lecon_voice;
   String? lecon_image;
   String? lecon_description;
@@ -17,6 +18,7 @@ class Lecon {
   Lecon({
     required this.module_id,
     required this.lecon_title,
+    required this.lecon_unique_code,
     required this.lecon_voice,
     this.lecon_description,
     this.lecon_id,
@@ -26,6 +28,7 @@ class Lecon {
   });
 
   factory Lecon.fromMap(data) => Lecon(
+        lecon_unique_code: data['lecon_unique_code'],
         module_id: data['module_id'],
         lecon_title: data['lecon_title'],
         lecon_voice: data['lecon_voice'],
@@ -35,6 +38,7 @@ class Lecon {
       );
 
   Map<String, dynamic> toMap() => {
+        'lecon_unique_code': lecon_unique_code,
         'module_id': module_id,
         'lecon_title': lecon_title,
         'lecon_voice': lecon_voice,
@@ -44,6 +48,7 @@ class Lecon {
       };
 
   Future<FormData> toAPI() async => FormData.fromMap({
+        'lecon_unique_code': lecon_unique_code,
         'module_id': module_id,
         'lecon_title': lecon_title,
         'lecon_voice': await MultipartFile.fromFile(voice_lecon!.path),

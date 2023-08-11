@@ -67,6 +67,7 @@ class UserController {
 
   Future<Map<String, dynamic>> loginUser(
       String user_email, String user_password) async {
+    printer('Start login');
     final dio = Dio();
     final data = {
       'email': user_email,
@@ -75,7 +76,7 @@ class UserController {
     try {
       return await dio.post('$base_url/user/login', data: data).then(
         (value) async {
-          // printer(value.statusCode);
+          printer(value.statusCode);
           if (value.statusCode == 200) {
             final datat = value.data;
             final token = datat['result']['token'];

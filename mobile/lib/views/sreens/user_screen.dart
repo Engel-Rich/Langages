@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/providers/tokenprovider.dart';
+import 'package:get/get.dart';
+import 'package:mobile/providers/data_providers.dart';
 import 'package:mobile/views/sreens/initialpage.dart';
 import 'package:page_transition/page_transition.dart';
+
 // import 'package:page_transition/page_transition.dart';
 
 import '../../commons/style.dart';
@@ -67,10 +69,10 @@ class _UserScreenState extends State<UserScreen> {
           const SizedBox(
             height: 10,
           ),
-          const Center(
+          Center(
             child: Text(
-              'Ivankouamou21@gmail.com',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300),
+              "${UserProvider.user.currenUser!.userEmail} ",
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w300),
             ),
           ),
           const SizedBox(
@@ -80,11 +82,14 @@ class _UserScreenState extends State<UserScreen> {
             'Mes Langues',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
+          spacerheight(10),
           Container(
             height: 100,
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: !Get.isDarkMode
+                    ? Colors.grey.shade200
+                    : const Color.fromARGB(255, 39, 36, 36),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -93,22 +98,20 @@ class _UserScreenState extends State<UserScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 minilangeContainer(context, "B", Colors.green),
-
                 minilangeContainer(context, "E", Colors.indigo),
-
                 minilangeContainer(context, "F", Colors.blueAccent),
-
-                // minilangeContainer(context, "M", Colors.amber),
                 spacerwidth(10),
                 Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child:
-                        const Center(child: Icon(Icons.more_vert, size: 30))),
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.more_vert, size: 30),
+                  ),
+                ),
                 spacerwidth(10),
               ],
             ),
@@ -120,38 +123,47 @@ class _UserScreenState extends State<UserScreen> {
             'Paramètres Application',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
+          spacerheight(10),
           Column(
             children: [
-              listProfil(const Color.fromARGB(255, 243, 241, 241),
-                  'Notifications', 'Activer', funct(istrue)),
-              const SizedBox(
-                height: 5,
-              ),
               Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: const Color.fromARGB(255, 243, 241, 241)),
+                  borderRadius: BorderRadius.circular(8),
+                  color: !Get.isDarkMode
+                      ? const Color.fromARGB(255, 243, 241, 241)
+                      : const Color.fromARGB(255, 39, 36, 36),
+                ),
                 child: ListTile(
                   leading: const Icon(Icons.book),
                   title: const Text('Mode Sombre'),
                   subtitle: const Text('Activer'),
                   trailing: Switch(
                     value: isSwitched,
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      isSwitched =
+                          UserProvider.user.currentTheme == ThemeMode.dark;
+                      UserProvider.user.setThemode(
+                          isSwitched ? ThemeMode.light : ThemeMode.dark);
+                      await UserProvider.user
+                          .saveTheme(isSwitched ? theme[1]! : theme[-1]!);
                       setState(() {
-                        isSwitched = value;
+                        isSwitched =
+                            UserProvider.user.currentTheme == ThemeMode.dark;
                       });
                     },
-                    activeTrackColor: Colors.lightGreenAccent,
-                    activeColor: Colors.green,
+                    // activeTrackColor: Colors.lightGreenAccent,
+                    // activeColor: Colors.green,
                   ),
                 ),
               ),
               const SizedBox(
                 height: 5,
               ),
+              spacerheight(10),
               listProfil2(
-                const Color.fromARGB(255, 243, 241, 241),
+                !Get.isDarkMode
+                    ? const Color.fromARGB(255, 243, 241, 241)
+                    : const Color.fromARGB(255, 39, 36, 36),
                 'Langues',
                 'changer de langue',
               ),
@@ -160,23 +172,22 @@ class _UserScreenState extends State<UserScreen> {
               ),
             ],
           ),
-          Center(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: 55,
-              child: bouttonCommun(
-                tittle: "Se Déconnecté",
-                onPressed: () async {
-                  await UserProvider().logOut().then((val) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        PageTransition(
-                            child: InitialScreen(),
-                            type: PageTransitionType.leftToRight),
-                        (route) => false);
-                  });
-                },
-              ),
+          spacerheight(20),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: bouttonCommun(
+              tittle: "Se Déconnecté",
+              onPressed: () async {
+                await UserProvider().logOut().then((val) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      PageTransition(
+                          child: InitialScreen(),
+                          type: PageTransitionType.leftToRight),
+                      (route) => false);
+                });
+              },
             ),
           ),
         ]),

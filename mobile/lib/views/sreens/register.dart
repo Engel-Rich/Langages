@@ -10,7 +10,7 @@ import 'package:page_transition/page_transition.dart';
 import '../../commons/fonctions.dart';
 import '../../commons/style.dart';
 import '../../controllers/usercontroller.dart';
-import '../../providers/tokenprovider.dart';
+import '../../providers/data_providers.dart';
 import '../components/button.dart';
 
 class RegisterPage extends StatefulWidget {

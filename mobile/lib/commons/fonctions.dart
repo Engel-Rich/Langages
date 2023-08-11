@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile/commons/style.dart';
-import 'package:mobile/providers/tokenprovider.dart';
+import 'package:mobile/providers/data_providers.dart';
 
 printer(data) {
   if (kDebugMode) {

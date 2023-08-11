@@ -7,7 +7,7 @@ import 'package:mobile/controllers/usercontroller.dart';
 import 'package:mobile/views/sreens/homepage.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../providers/tokenprovider.dart';
+import '../../providers/data_providers.dart';
 import '../components/button.dart';
 
 class LoginScreen extends StatefulWidget {

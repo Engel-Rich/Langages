@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mobile/commons/style.dart';
 import 'package:mobile/controllers/langue_controller.dart';
 import 'package:mobile/models/langues.dart';
@@ -67,23 +68,25 @@ class _LangagesScreenState extends State<LangagesScreen> {
                             color: Colors.red,
                           )),
                     )
-                  : Center(
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: [
-                          ...allLangages!
-                              .map(
-                                (lang) => langeContainer(
-                                  context,
-                                  langue: lang,
-                                  colors: selColor(),
-                                ),
-                              )
-                              .toList(),
-                        ],
-                      ),
-                    ),
+                  : allLangages!.isEmpty
+                      ? Center(child: Lottie.asset('assets/icon/empty3.json'))
+                      : Center(
+                          child: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              ...allLangages!
+                                  .map(
+                                    (lang) => langeContainer(
+                                      context,
+                                      langue: lang,
+                                      colors: selColor(),
+                                    ),
+                                  )
+                                  .toList(),
+                            ],
+                          ),
+                        ),
         ),
       ),
     );

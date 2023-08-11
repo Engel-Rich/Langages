@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:mobile/commons/constances.dart';
 import 'package:mobile/commons/fonctions.dart';
 import 'package:mobile/models/users.dart';
-import 'package:mobile/providers/tokenprovider.dart';
+import 'package:mobile/providers/data_providers.dart';
 
 class UserController {
   // Register user
@@ -126,7 +126,7 @@ class UserController {
   Future<UserApp?> getUser(context) async {
     final dio = Dio();
     final user_provider = UserProvider.user;
-    await user_provider.getToken();
+    await user_provider.getDatas();
     printer(authorization());
     try {
       return await dio
@@ -140,6 +140,7 @@ class UserController {
         (value) {
           if (value.statusCode == 200) {
             final data = value.data;
+            printer(data);
             final user = UserApp.fromMap(data['result']);
             printer(user.toMap());
             return user;

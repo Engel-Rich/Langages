@@ -16,7 +16,11 @@ class UserController {
     final dio = Dio();
     try {
       return await dio
-          .post('$base_url/user/register', data: userApp.toMap())
+          .post(
+        '$base_url/user/register',
+        data: userApp.toMap(),
+        options: Options(headers: {'Accept': 'application/Json'}),
+      )
           .then(
         (value) async {
           printer(value.statusCode);
@@ -73,7 +77,13 @@ class UserController {
       'password': user_password,
     };
     try {
-      return await dio.post('$base_url/user/login', data: data).then(
+      return await dio
+          .post(
+        '$base_url/user/login',
+        data: data,
+        options: Options(headers: {'Accept': 'application/Json'}),
+      )
+          .then(
         (value) async {
           // printer(value.statusCode);
           if (value.statusCode == 200) {
@@ -175,6 +185,7 @@ class UserController {
       return await dio
           .get(
         '$base_url/user/all',
+        options: Options(headers: authorization()),
       )
           .then(
         (value) {

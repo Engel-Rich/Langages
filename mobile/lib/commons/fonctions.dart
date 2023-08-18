@@ -47,6 +47,6 @@ toasterSucces(BuildContext context, message) {
 }
 
 authorization() => {
-      // "Content-Type": "Application/json",
+      'Accept': 'application/Json',
       "Authorization": "Bearer ${UserProvider.user.tokenuser}"
     };
